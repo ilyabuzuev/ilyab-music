@@ -4,16 +4,23 @@ import { PlayStatus } from '@/enums/PlayStatus';
 
 interface State {
   status: PlayStatus;
-  currentSong: HTMLAudioElement | null;
+  currentSong: {
+    info: ISong;
+    audio: HTMLAudioElement | null;
+  };
   songs: ISong[];
 }
 
 export const useSongsStore = defineStore('songsStore', {
   state: (): State => ({
     status: PlayStatus.IDLE,
-    currentSong: null,
+    currentSong: {
+      info: { id: 0, title: '', author: '', cover: '', duration: '', url: '' },
+      audio: null
+    },
     songs: [],
   }),
+
   getters: {
     getSongById: (state: State) => {
       return (songId: number) =>
@@ -21,20 +28,26 @@ export const useSongsStore = defineStore('songsStore', {
           (song: ISong): boolean => song.id === songId
         );
     },
+
     getCurrentSong(state) {
       return state.currentSong;
     },
+
     getStatus(state): PlayStatus {
       return state.status;
     },
   },
+
   actions: {
     setSong(song: ISong): void {
       this.songs.push(song);
     },
-    setCurrentSong(audio: HTMLAudioElement): void {
-      this.currentSong = audio;
+
+    setCurrentSong(audio: HTMLAudioElement, song: ISong): void {
+      this.currentSong.audio = audio;
+      this.currentSong.info = song;
     },
+
     setStatus(status: PlayStatus): void {
       this.status = status;
     },

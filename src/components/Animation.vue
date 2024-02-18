@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getRandomIntNumber } from "@/helpers/getRandomIntNumber";
-import {ref} from "vue";
+import { ref, onMounted, onUnmounted } from 'vue';
+import { getRandomIntNumber } from '@/helpers/getRandomIntNumber';
 
 const songAnimationInterval = ref();
 
@@ -13,22 +13,22 @@ function getBarHeight(index: number) {
   let height;
 
   if (index === 1) {
-    height = getRandomIntNumber(60, 90);
+    height = getRandomIntNumber(70, 100);
   }
 
   if (index === 2) {
-    height = getRandomIntNumber(65, 74);
+    height = getRandomIntNumber(75, 84);
   }
 
   if (index === 3) {
-    height = getRandomIntNumber(55, 64);
+    height = getRandomIntNumber(65, 74);
   }
 
   if (index === 4) {
-    height = getRandomIntNumber(45,60);
+    height = getRandomIntNumber(55, 70);
   }
 
-  return { 'height': `${height}%` };
+  return { height: `${height}%` };
 }
 
 function animateSong() {
@@ -46,7 +46,13 @@ function stopSongAnimationInterval() {
   clearInterval(songAnimationInterval.value);
 }
 
-startSongAnimation();
+onMounted(() => {
+  startSongAnimation();
+});
+
+onUnmounted(() => {
+  stopSongAnimationInterval();
+});
 </script>
 
 <template>
@@ -62,14 +68,14 @@ startSongAnimation();
 .animation {
   display: flex;
   gap: 4px;
-  height: 100%;
+  height: 26px;
 }
 
 .animation__bar {
   align-self: end;
-  width: 4px;
+  width: 3px;
   background-color: var(--bar-bg-color);
   border-radius: var(--size-xs);
-  transition: height .2s ease;
+  transition: height 0.2s ease;
 }
 </style>

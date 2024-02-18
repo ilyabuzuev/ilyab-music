@@ -11,7 +11,7 @@ defineProps<IAlbum>();
     <div class="album__header">
       <div class="album__cover">
         <picture>
-          <img class="album__image" :src="cover" :alt="title">
+          <img class="album__image" :src="cover" :alt="title" />
         </picture>
       </div>
       <div class="album__information">
@@ -24,7 +24,7 @@ defineProps<IAlbum>();
           <div>{{ releaseYear }}</div>
         </div>
         <div class="album__actions">
-          <Button label="Слушать" />
+          <Button label="Слушать" :data-target-album="id" />
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@ defineProps<IAlbum>();
 .album {
   border-radius: var(--size-md);
 }
+
 .album__header {
   display: flex;
   gap: var(--size-lg);

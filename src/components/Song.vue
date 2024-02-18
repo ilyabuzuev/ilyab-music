@@ -1,152 +1,161 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useSongsStore } from '@/stores/songs.store';
 import type { ISong } from '@/models/ISong';
 import { PlayStatus } from '@/enums/PlayStatus';
 import IconPlay from '@/components/icons/IconPlay.vue';
 import IconPause from '@/components/icons/IconPause.vue';
-import Animation from "@/components/Animation.vue";
+import Animation from '@/components/Animation.vue';
 
 const props = defineProps<ISong>();
 
 const songsStore = useSongsStore();
-const currentDuration = ref<string>(props.duration);
 const { id, title, author, url, cover, duration } = props;
 const song: ISong = { id, title, author, url, cover, duration };
+
+const currentTime = ref();
 
 function setSongToStore(song: ISong): void {
   songsStore.setSong(song);
 }
 
 function createAudio(song: ISong): HTMLAudioElement {
-  const audio = new Audio(song.url);
-
-  audio.dataset.id = String(song.id);
-
-  return audio;
+  return new Audio(song.url);
 }
 
-function play(audio: HTMLAudioElement): void {
-  songsStore.setCurrentSong(audio);
+function play(song: ISong): void {
+  const audio =
+    songsStore.getCurrentSong.info.id === song.id
+      ? songsStore.getCurrentSong.audio
+      : createAudio(song);
 
-  audio.play();
-  audio.volume = 0.1;
+  if (audio) {
+    songsStore.setCurrentSong(audio, song);
 
-  songsStore.setStatus(PlayStatus.IS_PLAYING);
+    audio.play();
+    audio.volume = 0.1;
 
-  songEndHandler(audio);
+    songsStore.setStatus(PlayStatus.IS_PLAYING);
+
+    // songEndHandler(audio);
+  }
+
+  // const csong = songsStore.getCurrentSong;
+
+  // if (csong) {
+  //   csong.addEventListener('timeupdate', currTimeUpdate);
+  // }
 }
 function pause() {
-  const currentSong: HTMLAudioElement = songsStore.getCurrentSong as unknown as HTMLAudioElement;
+  const currentSong = songsStore.getCurrentSong;
 
-  currentSong.pause();
+  if (currentSong.audio) currentSong.audio.pause();
 
   songsStore.setStatus(PlayStatus.IS_STOPPED);
 }
 
 function stop() {
-  const currentSong: HTMLAudioElement = songsStore.getCurrentSong as unknown as HTMLAudioElement;
+  const currentSong = songsStore.getCurrentSong;
 
-  pause();
+  if (currentSong.audio) {
+    pause();
 
-  currentSong.currentTime = 0.0;
+    currentSong.audio.currentTime = 0.0;
+  }
 }
 
 function next() {
   const nextSong = getNextSong();
 
-  console.log(songsStore.getCurrentSong, nextSong)
+  // console.log(songsStore.getCurrentSong.info, nextSong);
 
   stop();
   play(nextSong);
 }
 
-function getNextSong(): HTMLAudioElement {
-  const currentSong: HTMLAudioElement = songsStore.getCurrentSong as unknown as HTMLAudioElement;
-  const currentSongId = currentSong.dataset.id as unknown as string;
-  const nextSong: ISong = songsStore.getSongById(+currentSongId + 1) as unknown as ISong;
+function getNextSong() {
+  const currentSong = songsStore.getCurrentSong;
 
-  return createAudio(nextSong);
+  if (currentSong.info.id === songsStore.songs.length) {
+    return songsStore.getSongById(1);
+  } else {
+    return songsStore.getSongById(currentSong?.info.id + 1);
+  }
 }
 
-function songEndHandler(audio: HTMLAudioElement) {
-  audio.addEventListener('ended', () => {
-    next();
-  });
-}
-
-// class Song {
-//   song: ISong;
-//   currentSong: HTMLAudioElement;
-//
-//   constructor(song: ISong) {
-//     this.song = song;
-//     this.currentSong = songsStore.getCurrentSong as unknown as HTMLAudioElement;
-//   }
-//
-//   private create(): HTMLAudioElement {
-//     return new Audio(this.song.url);
-//   }
-//
-//   public play(): void {
-//     const audio = this.create();
-//
-//     audio.play();
-//     audio.volume = 0.1;
-//
-//     this.currentSong = audio;
-//   }
+// function songEndHandler(audio: HTMLAudioElement) {
+//   audio.addEventListener('ended', () => {
+//     next();
+//   });
 // }
-//
-// const audio = new Song(song);
 
 function songClickHandler(): void {
-  const audio: HTMLAudioElement = createAudio(song);
-  const currentSong: HTMLAudioElement = songsStore.getCurrentSong as unknown as HTMLAudioElement;
+  const currentSong = songsStore.getCurrentSong;
   const status: PlayStatus = songsStore.getStatus;
 
   if (status === PlayStatus.IDLE) {
-    play(audio);
+    play(song);
     return;
   }
 
   if (status === PlayStatus.IS_PLAYING) {
-    if (song.id === +currentSong.dataset.id) {
+    if (song.id === currentSong.info.id) {
       pause();
     } else {
       stop();
-      play(audio);
+      play(song);
     }
 
     return;
   }
 
   if (status === PlayStatus.IS_STOPPED) {
-    if (song.id === +currentSong.dataset.id) {
-      play(currentSong);
+    if (song.id === currentSong.info.id) {
+      play(currentSong.info);
     } else {
       stop();
-      play(audio);
+      play(song);
     }
 
     return;
   }
 }
 
-setSongToStore(song);
+// function currTimeUpdate() {
+//   currentTime.value = songsStore.getCurrentSong.currentTime;
+// }
 
-// console.log(songsStore.songs);
+setSongToStore(song);
 </script>
 
 <template>
-  <div class="song" :class="{'song--playing': PlayStatus.IS_PLAYING && song.id === +songsStore.getCurrentSong?.dataset.id}" @click="songClickHandler">
+  <div
+    class="song"
+    :class="{
+      'song--playing':
+        PlayStatus.IS_PLAYING &&
+        // @ts-ignore
+        song.id === songsStore.getCurrentSong.id,
+    }"
+    @click="songClickHandler"
+  >
     <div class="song__cover">
+      <div class="song__animation">
+        <Animation />
+      </div>
       <div class="song__icon">
-        <div v-if="songsStore.status === PlayStatus.IS_PLAYING && song.id === +songsStore.getCurrentSong?.dataset.id">
+        <div
+          v-if="
+            songsStore.status === PlayStatus.IS_PLAYING &&
+            // @ts-ignore
+            song.id === songsStore.getCurrentSong.info.id
+          "
+        >
           <IconPause />
         </div>
         <div v-else>
-          <IconPlay />
+          <!-- TODO:расскомненить строку -->
+          <!-- <IconPlay /> -->
         </div>
       </div>
       <picture>
@@ -162,11 +171,13 @@ setSongToStore(song);
           {{ author }}
         </div>
       </div>
-      <div class="song__animation">
-        <Animation />
-      </div>
       <div class="song__duration">
-        {{ currentDuration }}
+        <div v-if="songsStore.getCurrentSong.info.id">
+          {{ currentTime }}
+        </div>
+        <div v-else>
+          {{ duration }}
+        </div>
       </div>
     </div>
   </div>
@@ -174,6 +185,7 @@ setSongToStore(song);
 
 <style scoped>
 .song {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--size-sm);
@@ -209,7 +221,7 @@ setSongToStore(song);
   background-color: var(--color-11);
   border-radius: var(--size-xs);
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   z-index: 1;
 }
 
@@ -217,7 +229,6 @@ setSongToStore(song);
 .song.song--playing .song__cover::after {
   opacity: 0.8;
 }
-
 
 .song__icon {
   position: absolute;
@@ -227,7 +238,7 @@ setSongToStore(song);
   justify-content: center;
   align-items: center;
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   z-index: 10;
 }
 
@@ -235,7 +246,6 @@ setSongToStore(song);
 .song.song--playing .song__icon {
   opacity: 1;
 }
-
 
 .song__img {
   display: block;
@@ -263,6 +273,11 @@ setSongToStore(song);
 }
 
 .song__animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   align-self: stretch;
+  z-index: 10;
 }
 </style>
