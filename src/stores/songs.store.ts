@@ -7,6 +7,7 @@ interface State {
   currentSong: {
     info: ISong;
     audio: HTMLAudioElement | null;
+    currentTime: number | undefined;
   };
   songs: ISong[];
 }
@@ -16,7 +17,8 @@ export const useSongsStore = defineStore('songsStore', {
     status: PlayStatus.IDLE,
     currentSong: {
       info: { id: 0, title: '', author: '', cover: '', duration: '', url: '' },
-      audio: null
+      audio: null,
+      currentTime: 0,
     },
     songs: [],
   }),
@@ -29,7 +31,7 @@ export const useSongsStore = defineStore('songsStore', {
         );
     },
 
-    getCurrentSong(state) {
+    getCurrentSong(state): State['currentSong'] {
       return state.currentSong;
     },
 

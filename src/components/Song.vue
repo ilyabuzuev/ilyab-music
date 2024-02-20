@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import { useSongsStore } from '@/stores/songs.store';
 import type { ISong } from '@/models/ISong';
 import { PlayStatus } from '@/enums/PlayStatus';
+import { convertTime } from '@/helpers/convertTime';
 import IconPlay from '@/components/icons/IconPlay.vue';
 import IconPause from '@/components/icons/IconPause.vue';
 import Animation from '@/components/Animation.vue';
@@ -12,8 +12,6 @@ const props = defineProps<ISong>();
 const songsStore = useSongsStore();
 const { id, title, author, url, cover, duration } = props;
 const song: ISong = { id, title, author, url, cover, duration };
-
-const currentTime = ref();
 
 function setSongToStore(song: ISong): void {
   songsStore.setSong(song);
@@ -33,18 +31,13 @@ function play(song: ISong): void {
     songsStore.setCurrentSong(audio, song);
 
     audio.play();
-    audio.volume = 0.1;
+    audio.volume = 0.05;
 
     songsStore.setStatus(PlayStatus.IS_PLAYING);
 
-    // songEndHandler(audio);
+    audio.addEventListener('ended', songEndHandler);
+    audio.addEventListener('timeupdate', currTimeUpdate);
   }
-
-  // const csong = songsStore.getCurrentSong;
-
-  // if (csong) {
-  //   csong.addEventListener('timeupdate', currTimeUpdate);
-  // }
 }
 function pause() {
   const currentSong = songsStore.getCurrentSong;
@@ -67,14 +60,16 @@ function stop() {
 function next() {
   const nextSong = getNextSong();
 
-  // console.log(songsStore.getCurrentSong.info, nextSong);
-
-  stop();
-  play(nextSong);
+  if (nextSong) {
+    stop();
+    play(nextSong);
+  }
 }
 
 function getNextSong() {
   const currentSong = songsStore.getCurrentSong;
+
+  console.log(currentSong.info.id, songsStore.songs.length);
 
   if (currentSong.info.id === songsStore.songs.length) {
     return songsStore.getSongById(1);
@@ -83,11 +78,14 @@ function getNextSong() {
   }
 }
 
-// function songEndHandler(audio: HTMLAudioElement) {
-//   audio.addEventListener('ended', () => {
-//     next();
-//   });
-// }
+function currTimeUpdate() {
+  songsStore.getCurrentSong.currentTime =
+    songsStore.getCurrentSong.audio?.currentTime;
+}
+
+function songEndHandler() { 
+  next();
+}
 
 function songClickHandler(): void {
   const currentSong = songsStore.getCurrentSong;
@@ -121,10 +119,6 @@ function songClickHandler(): void {
   }
 }
 
-// function currTimeUpdate() {
-//   currentTime.value = songsStore.getCurrentSong.currentTime;
-// }
-
 setSongToStore(song);
 </script>
 
@@ -132,30 +126,33 @@ setSongToStore(song);
   <div
     class="song"
     :class="{
+      'song--current': song.id === songsStore.getCurrentSong.info.id,
       'song--playing':
-        PlayStatus.IS_PLAYING &&
-        // @ts-ignore
-        song.id === songsStore.getCurrentSong.id,
+        songsStore.status === PlayStatus.IS_PLAYING &&
+        song.id === songsStore.getCurrentSong.info.id,
     }"
     @click="songClickHandler"
   >
     <div class="song__cover">
-      <div class="song__animation">
-        <Animation />
+      <div
+        v-if="song.id === songsStore.getCurrentSong.info.id"
+        class="song__animation"
+      >
+        <Animation
+          v-show="songsStore.status === PlayStatus.IS_PLAYING"
+        />
       </div>
       <div class="song__icon">
         <div
           v-if="
             songsStore.status === PlayStatus.IS_PLAYING &&
-            // @ts-ignore
             song.id === songsStore.getCurrentSong.info.id
           "
         >
           <IconPause />
         </div>
         <div v-else>
-          <!-- TODO:расскомненить строку -->
-          <!-- <IconPlay /> -->
+          <IconPlay />
         </div>
       </div>
       <picture>
@@ -172,8 +169,8 @@ setSongToStore(song);
         </div>
       </div>
       <div class="song__duration">
-        <div v-if="songsStore.getCurrentSong.info.id">
-          {{ currentTime }}
+        <div v-if="song.id === songsStore.getCurrentSong.info.id">
+          {{ convertTime(songsStore.getCurrentSong.currentTime) }}
         </div>
         <div v-else>
           {{ duration }}
@@ -196,12 +193,16 @@ setSongToStore(song);
   user-select: none;
 }
 
-.song--playing {
+.song--current {
   background-color: var(--bg-color-soft);
 }
 
 .song:hover {
   background-color: var(--bg-color-soft);
+}
+
+.song.song--playing:hover .song__animation {
+  display: none;
 }
 
 .song__cover {
@@ -244,6 +245,14 @@ setSongToStore(song);
 
 .song:hover .song__icon,
 .song.song--playing .song__icon {
+  opacity: 1;
+}
+
+.song.song--playing .song__icon {
+  opacity: 0;
+}
+
+.song.song--playing:hover .song__icon {
   opacity: 1;
 }
 

@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { useSongsStore } from '@/stores/songs.store';
 import { getRandomIntNumber } from '@/helpers/getRandomIntNumber';
+import { PlayStatus } from '@/enums/PlayStatus';
+
+const songsStore = useSongsStore();
 
 const songAnimationInterval = ref();
 
@@ -53,6 +57,17 @@ onMounted(() => {
 onUnmounted(() => {
   stopSongAnimationInterval();
 });
+
+watch(
+  () => songsStore.status,
+  (status) => {
+    if (status === PlayStatus.IS_PLAYING) {
+      startSongAnimation();
+    } else {
+      stopSongAnimationInterval();
+    }
+  }
+);
 </script>
 
 <template>
