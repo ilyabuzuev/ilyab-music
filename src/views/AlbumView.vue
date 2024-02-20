@@ -6,16 +6,21 @@ import type { IAlbum } from '@/models/IAlbum';
 
 const router = useRouter();
 
-const id: number = router.currentRoute.value.params.id;
-const album: IAlbum = getAlbum(id);
+const id: string = router.currentRoute.value.params
+  .id as unknown as string;
+const album: IAlbum = getAlbum(Number(id));
 
 function getAlbum(id: number): IAlbum {
-  return albums.find((album: IAlbum) => album.id == id);
+  const album = albums.find(
+    (album: IAlbum) => album.id === id
+  ) as unknown as IAlbum;
+
+  return album;
 }
 </script>
 
 <template>
-  <div class="container test">
+  <div class="container">
     <Album
       :id="album.id"
       :title="album.title"

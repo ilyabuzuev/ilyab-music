@@ -23,6 +23,7 @@ defineProps<IButton>();
 <style scoped>
 .button {
   display: flex;
+  align-items: center;
   padding: var(--size-sm) var(--size-xl);
   background-color: var(--button-bg-color);
   border-radius: var(--size-sm);

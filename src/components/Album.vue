@@ -6,8 +6,17 @@ import type { IAlbum } from '@/models/IAlbum';
 
 const props = defineProps<IAlbum>();
 const playerStore = usePlayerStore();
-const { id, title, author, releaseYear, cover, songs, description } = props;
-const album: IAlbum = { id, title, author, releaseYear, cover, songs, description };
+const { id, title, author, releaseYear, cover, songs, description } =
+  props;
+const album: IAlbum = {
+  id,
+  title,
+  author,
+  releaseYear,
+  cover,
+  songs,
+  description,
+};
 
 playerStore.setAlbum(album);
 </script>
@@ -35,7 +44,7 @@ playerStore.setAlbum(album);
       </div>
     </div>
     <div class="album__body">
-      <ul class="album__list">
+      <ul class="album__list" v-if="songs.length">
         <li class="album__item" v-for="song in songs" :key="song.id">
           <Song
             :albumId="id"
@@ -48,6 +57,7 @@ playerStore.setAlbum(album);
           />
         </li>
       </ul>
+      <div class="album__empty" v-else>Песни не найдены</div>
     </div>
   </article>
 </template>
@@ -99,7 +109,6 @@ playerStore.setAlbum(album);
 
 .album__body {
   padding: var(--size-lg);
-  /*background-color: var(--bg-color-soft);*/
   border: 1px solid var(--bg-color-soft);
   border-radius: var(--size-sm);
 }
@@ -108,5 +117,10 @@ playerStore.setAlbum(album);
   display: flex;
   flex-direction: column;
   gap: var(--size-sm);
+}
+
+.album__empty {
+  font-size: var(--text-sm);
+  color: var(--text-color-soft);
 }
 </style>

@@ -55,6 +55,24 @@ export const usePlayerStore = defineStore('playerStore', {
       }
     },
 
+    previousSong(): ISong {
+      const albumId = this.currentSong.info.albumId - 1;
+      const currentAlbum = this._albums[albumId];
+      const songId = this.currentSong.info.id;
+
+      if (this.currentSong.currentTime) {
+        if (this.currentSong.currentTime > 3) {
+          return this.currentSong.info;
+        }
+      }
+
+      if (songId === 1) {
+        return currentAlbum.songs[currentAlbum.songs.length - 1];
+      } else {
+        return currentAlbum.songs[songId - 2];
+      }
+    },
+
     status(): PlayStatus {
       return this._status;
     },
@@ -103,6 +121,10 @@ export const usePlayerStore = defineStore('playerStore', {
       this.setStatus(PlayStatus.IS_STOPPED);
     },
 
+    unpauseSong(): void {
+      this.playSong(this.currentSong.info);
+    },
+
     stopSong(): void {
       if (this.currentSong.audio) {
         this.pauseSong();
@@ -110,21 +132,26 @@ export const usePlayerStore = defineStore('playerStore', {
       }
     },
 
-    playNextSong() {
-      const nextSong = this.nextSong;
-
-      if (nextSong) {
+    playNextSong(): void {
+      if (this.nextSong) {
         this.stopSong();
-        this.playSong(nextSong);
+        this.playSong(this.nextSong);
       }
     },
 
-    currentTimeUpdate() {
+    playPreviousSong(): void {
+      if (this.previousSong) {
+        this.stopSong();
+        this.playSong(this.previousSong);
+      }
+    },
+
+    currentTimeUpdate(): void {
       this.currentSong.currentTime =
         this.currentSong.audio?.currentTime;
     },
 
-    songEndHandler() {
+    songEndHandler(): void {
       this.playNextSong();
     },
   },

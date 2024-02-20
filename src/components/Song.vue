@@ -86,7 +86,7 @@ function songClickHandler(): void {
           {{ author }}
         </div>
       </div>
-      <div class="song__duration">
+      <div class="song__current-time">
         <div v-if="song.id === playerStore.currentSong.info.id">
           {{ convertTime(playerStore.currentSong.currentTime) }}
         </div>
@@ -206,5 +206,9 @@ function songClickHandler(): void {
   transform: translate(-50%, -50%);
   align-self: stretch;
   z-index: 10;
+}
+
+.song__current-time {
+  color: var(--text-color-soft);
 }
 </style>
