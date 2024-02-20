@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { usePlayerStore } from '@/stores/player.store';
 import Song from '@/components/Song.vue';
 import Button from '@/components/Button.vue';
 import type { IAlbum } from '@/models/IAlbum';
 
-defineProps<IAlbum>();
+const props = defineProps<IAlbum>();
+const playerStore = usePlayerStore();
+const { id, title, author, releaseYear, cover, songs, description } = props;
+const album: IAlbum = { id, title, author, releaseYear, cover, songs, description };
+
+playerStore.setAlbum(album);
 </script>
 
 <template>
@@ -32,6 +38,7 @@ defineProps<IAlbum>();
       <ul class="album__list">
         <li class="album__item" v-for="song in songs" :key="song.id">
           <Song
+            :albumId="id"
             :id="song.id"
             :title="song.title"
             :author="song.author"

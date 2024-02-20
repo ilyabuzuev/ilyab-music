@@ -16,7 +16,14 @@ export const useSongsStore = defineStore('songsStore', {
   state: (): State => ({
     status: PlayStatus.IDLE,
     currentSong: {
-      info: { id: 0, title: '', author: '', cover: '', duration: '', url: '' },
+      info: {
+        id: 0,
+        title: '',
+        author: '',
+        cover: '',
+        duration: '',
+        url: '',
+      },
       audio: null,
       currentTime: 0,
     },

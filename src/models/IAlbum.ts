@@ -1,4 +1,5 @@
 import type { ISong } from '@/models/ISong';
+
 export interface IAlbum {
   id: number;
   title: string;

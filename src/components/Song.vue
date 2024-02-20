@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSongsStore } from '@/stores/songs.store';
+import { usePlayerStore } from '@/stores/player.store';
 import type { ISong } from '@/models/ISong';
 import { PlayStatus } from '@/enums/PlayStatus';
 import { convertTime } from '@/helpers/convertTime';
@@ -7,146 +7,64 @@ import IconPlay from '@/components/icons/IconPlay.vue';
 import IconPause from '@/components/icons/IconPause.vue';
 import Animation from '@/components/Animation.vue';
 
-const props = defineProps<ISong>();
-
-const songsStore = useSongsStore();
-const { id, title, author, url, cover, duration } = props;
-const song: ISong = { id, title, author, url, cover, duration };
-
-function setSongToStore(song: ISong): void {
-  songsStore.setSong(song);
-}
-
-function createAudio(song: ISong): HTMLAudioElement {
-  return new Audio(song.url);
-}
-
-function play(song: ISong): void {
-  const audio =
-    songsStore.getCurrentSong.info.id === song.id
-      ? songsStore.getCurrentSong.audio
-      : createAudio(song);
-
-  if (audio) {
-    songsStore.setCurrentSong(audio, song);
-
-    audio.play();
-    audio.volume = 0.05;
-
-    songsStore.setStatus(PlayStatus.IS_PLAYING);
-
-    audio.addEventListener('ended', songEndHandler);
-    audio.addEventListener('timeupdate', currTimeUpdate);
-  }
-}
-function pause() {
-  const currentSong = songsStore.getCurrentSong;
-
-  if (currentSong.audio) currentSong.audio.pause();
-
-  songsStore.setStatus(PlayStatus.IS_STOPPED);
-}
-
-function stop() {
-  const currentSong = songsStore.getCurrentSong;
-
-  if (currentSong.audio) {
-    pause();
-
-    currentSong.audio.currentTime = 0.0;
-  }
-}
-
-function next() {
-  const nextSong = getNextSong();
-
-  if (nextSong) {
-    stop();
-    play(nextSong);
-  }
-}
-
-function getNextSong() {
-  const currentSong = songsStore.getCurrentSong;
-
-  console.log(currentSong.info.id, songsStore.songs.length);
-
-  if (currentSong.info.id === songsStore.songs.length) {
-    return songsStore.getSongById(1);
-  } else {
-    return songsStore.getSongById(currentSong?.info.id + 1);
-  }
-}
-
-function currTimeUpdate() {
-  songsStore.getCurrentSong.currentTime =
-    songsStore.getCurrentSong.audio?.currentTime;
-}
-
-function songEndHandler() { 
-  next();
-}
+const song = defineProps<ISong>();
+const playerStore = usePlayerStore();
 
 function songClickHandler(): void {
-  const currentSong = songsStore.getCurrentSong;
-  const status: PlayStatus = songsStore.getStatus;
-
-  if (status === PlayStatus.IDLE) {
-    play(song);
+  if (playerStore.status === PlayStatus.IDLE) {
+    playerStore.playSong(song);
     return;
   }
 
-  if (status === PlayStatus.IS_PLAYING) {
-    if (song.id === currentSong.info.id) {
-      pause();
+  if (playerStore.status === PlayStatus.IS_PLAYING) {
+    if (song.id === playerStore.currentSong.info.id) {
+      playerStore.pauseSong();
     } else {
-      stop();
-      play(song);
+      playerStore.stopSong();
+      playerStore.playSong(song);
     }
 
     return;
   }
 
-  if (status === PlayStatus.IS_STOPPED) {
-    if (song.id === currentSong.info.id) {
-      play(currentSong.info);
+  if (playerStore.status === PlayStatus.IS_STOPPED) {
+    if (song.id === playerStore.currentSong.info.id) {
+      playerStore.playSong(playerStore.currentSong.info);
     } else {
-      stop();
-      play(song);
+      playerStore.stopSong();
+      playerStore.playSong(song);
     }
 
     return;
   }
 }
-
-setSongToStore(song);
 </script>
 
 <template>
   <div
     class="song"
     :class="{
-      'song--current': song.id === songsStore.getCurrentSong.info.id,
+      'song--current': song.id === playerStore.currentSong.info.id,
       'song--playing':
-        songsStore.status === PlayStatus.IS_PLAYING &&
-        song.id === songsStore.getCurrentSong.info.id,
+        playerStore.status === PlayStatus.IS_PLAYING &&
+        song.id === playerStore.currentSong.info.id,
     }"
     @click="songClickHandler"
   >
     <div class="song__cover">
       <div
-        v-if="song.id === songsStore.getCurrentSong.info.id"
+        v-if="song.id === playerStore.currentSong.info.id"
         class="song__animation"
       >
         <Animation
-          v-show="songsStore.status === PlayStatus.IS_PLAYING"
+          v-show="playerStore.status === PlayStatus.IS_PLAYING"
         />
       </div>
       <div class="song__icon">
         <div
           v-if="
-            songsStore.status === PlayStatus.IS_PLAYING &&
-            song.id === songsStore.getCurrentSong.info.id
+            playerStore.status === PlayStatus.IS_PLAYING &&
+            song.id === playerStore.currentSong.info.id
           "
         >
           <IconPause />
@@ -169,8 +87,8 @@ setSongToStore(song);
         </div>
       </div>
       <div class="song__duration">
-        <div v-if="song.id === songsStore.getCurrentSong.info.id">
-          {{ convertTime(songsStore.getCurrentSong.currentTime) }}
+        <div v-if="song.id === playerStore.currentSong.info.id">
+          {{ convertTime(playerStore.currentSong.currentTime) }}
         </div>
         <div v-else>
           {{ duration }}

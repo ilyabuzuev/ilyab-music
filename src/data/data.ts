@@ -9,6 +9,7 @@ export const albums: IAlbum[] = [
     cover: '../src/assets/images/covers/cover1.jpg',
     songs: [
       {
+        albumId: 1,
         id: 1,
         title: 'Sadness',
         author: 'IlyaB',
@@ -17,6 +18,7 @@ export const albums: IAlbum[] = [
         duration: '4:12',
       },
       {
+        albumId: 1,
         id: 2,
         title: 'Rain',
         author: 'IlyaB',
@@ -25,6 +27,7 @@ export const albums: IAlbum[] = [
         duration: '3:36',
       },
       {
+        albumId: 1,
         id: 3,
         title: 'March',
         author: 'IlyaB',
@@ -33,6 +36,7 @@ export const albums: IAlbum[] = [
         duration: '3:08',
       },
       {
+        albumId: 1,
         id: 4,
         title: 'April',
         author: 'IlyaB',
@@ -41,6 +45,7 @@ export const albums: IAlbum[] = [
         duration: '4:22',
       },
       {
+        albumId: 1,
         id: 5,
         title: 'Until Post-Punk Tears Us Apart',
         author: 'IlyaB',
@@ -49,6 +54,7 @@ export const albums: IAlbum[] = [
         duration: '2:07',
       },
       {
+        albumId: 1,
         id: 6,
         title: 'Dawn',
         author: 'IlyaB',
@@ -57,6 +63,7 @@ export const albums: IAlbum[] = [
         duration: '2:36',
       },
       {
+        albumId: 1,
         id: 7,
         title: 'Panic Attack',
         author: 'IlyaB',
@@ -65,6 +72,7 @@ export const albums: IAlbum[] = [
         duration: '1:32',
       },
       {
+        albumId: 1,
         id: 8,
         title: 'Tears of Autumn',
         author: 'IlyaB',
@@ -73,6 +81,7 @@ export const albums: IAlbum[] = [
         duration: '2:20',
       },
       {
+        albumId: 1,
         id: 9,
         title: 'Mountains',
         author: 'IlyaB',
@@ -81,6 +90,7 @@ export const albums: IAlbum[] = [
         duration: '1:27',
       },
       {
+        albumId: 1,
         id: 10,
         title: 'Good Bye',
         author: 'IlyaB',

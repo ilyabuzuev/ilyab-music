@@ -1,4 +1,5 @@
 export interface ISong {
+  albumId: number;
   id: number,
   title: string;
   author: string;
