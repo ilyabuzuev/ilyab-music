@@ -4,6 +4,7 @@ import { PlayStatus } from '@/enums/PlayStatus';
 import { convertTime } from '@/helpers/convertTime';
 import { Icon } from '@iconify/vue';
 import Button from '@/components/Button.vue';
+import Slider from '@/components/Slider.vue';
 
 const playerStore = usePlayerStore();
 </script>
@@ -11,11 +12,7 @@ const playerStore = usePlayerStore();
 <template>
   <div class="player" v-if="playerStore.currentSong.audio">
     <div class="player__controls">
-      <Button
-        @playerHandle="playerStore.playPreviousSong()"
-        noPaddings
-        isTransparent
-      >
+      <Button @playerHandle="playerStore.playPreviousSong()" noPaddings isTransparent>
         <template v-slot:icon>
           <Icon
             icon="tabler:player-track-prev-filled"
@@ -40,12 +37,7 @@ const playerStore = usePlayerStore();
           />
         </template>
       </Button>
-      <Button
-        v-else
-        @playerHandle="playerStore.unpauseSong()"
-        noPaddings
-        isTransparent
-      >
+      <Button v-else @playerHandle="playerStore.unpauseSong()" noPaddings isTransparent>
         <template v-slot:icon>
           <Icon
             icon="tabler:player-play-filled"
@@ -55,11 +47,7 @@ const playerStore = usePlayerStore();
           />
         </template>
       </Button>
-      <Button
-        @playerHandle="playerStore.playNextSong()"
-        noPaddings
-        isTransparent
-      >
+      <Button @playerHandle="playerStore.playNextSong()" noPaddings isTransparent>
         <template v-slot:icon>
           <Icon
             icon="tabler:player-track-next-filled"
@@ -80,7 +68,7 @@ const playerStore = usePlayerStore();
           />
         </picture>
       </div>
-      <div>
+      <div class="player__text">
         <div class="player__title">
           {{ playerStore.currentSong.info.title }}
         </div>
@@ -88,6 +76,9 @@ const playerStore = usePlayerStore();
           {{ playerStore.currentSong.info.author }}
         </div>
       </div>
+    </div>
+    <div class="player__slider">
+      <Slider />
     </div>
     <div class="player__current-time">
       {{ convertTime(playerStore.currentSong.currentTime) }}
@@ -97,10 +88,10 @@ const playerStore = usePlayerStore();
 
 <style scoped>
 .player {
-  width: 520px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 80px 180px 1fr 60px;
   align-items: center;
-  gap: var(--size-sm);
+  gap: var(--size-lg);
   padding: var(--size-lg);
   background-color: var(--bg-color-soft);
   border-radius: var(--size-sm);
@@ -108,6 +99,7 @@ const playerStore = usePlayerStore();
 
 .player__controls {
   display: flex;
+  justify-content: space-between;
 }
 
 .player__content {
@@ -126,6 +118,14 @@ const playerStore = usePlayerStore();
   width: 100%;
   border-radius: var(--size-xs);
   box-shadow: var(--shadow-xs);
+}
+
+.player__title,
+.player__author {
+  width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .player__title {

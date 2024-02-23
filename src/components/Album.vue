@@ -6,8 +6,7 @@ import type { IAlbum } from '@/models/IAlbum';
 
 const props = defineProps<IAlbum>();
 const playerStore = usePlayerStore();
-const { id, title, author, releaseYear, cover, songs, description } =
-  props;
+const { id, title, author, releaseYear, cover, songs, description } = props;
 const album: IAlbum = {
   id,
   title,
@@ -31,12 +30,18 @@ playerStore.setAlbum(album);
       </div>
       <div class="album__information">
         <div>
-          <h2 class="album__title">{{ title }}</h2>
+          <h2 class="album__title">
+            {{ title }}
+          </h2>
         </div>
         <div class="album__description">
-          <h3 class="album__author">{{ author }}</h3>
+          <h3 class="album__author">
+            {{ author }}
+          </h3>
           <div>•</div>
-          <div>{{ releaseYear }}</div>
+          <div>
+            {{ releaseYear }}
+          </div>
         </div>
         <div class="album__actions">
           <Button label="Слушать" :data-target-album="id" />
@@ -70,7 +75,7 @@ playerStore.setAlbum(album);
 .album__header {
   display: flex;
   gap: var(--size-lg);
-  padding: var(--size-xl) 0;
+  margin-bottom: var(--size-xl);
 }
 
 .album__image {

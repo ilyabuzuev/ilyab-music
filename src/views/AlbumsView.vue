@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import Album from "@/components/Album.vue";
-import { albums } from "@/data/data";
+import { albums } from '@/data/data';
 </script>
 
 <template>
   <div class="albums">
-    <div class="container">
+    <div class="container-REMOVE_THIS">
       <ul class="albums__list">
         <li class="albums__item" v-for="album in albums" :key="album.id">
           <router-link :to="`/albums/${album.id}`">
@@ -13,13 +12,11 @@ import { albums } from "@/data/data";
               <div class="album__header">
                 <div class="album__cover">
                   <picture>
-                    <img class="album__img" :src="album.cover" alt="">
+                    <img class="album__img" :src="album.cover" alt="" />
                   </picture>
                 </div>
                 <div class="album__information">
-                  <div class="album__type">
-                    Альбом
-                  </div>
+                  <div class="album__type">Альбом</div>
                   <h2 class="album__title">
                     {{ album.title }}
                   </h2>
@@ -53,7 +50,9 @@ import { albums } from "@/data/data";
   /*background-color: var(--bg-color-soft);*/
   border: 1px solid var(--bg-color-soft);
   border-radius: var(--size-sm);
-  transition: box-shadow .5s ease, background-color .5s ease;
+  transition:
+    box-shadow 0.5s ease,
+    background-color 0.5s ease;
 }
 
 .albums__item:hover {
@@ -106,7 +105,7 @@ import { albums } from "@/data/data";
 
 .album__author {
   font-size: var(--text-sm);
-  color: var(--text-color-soft)
+  color: var(--text-color-soft);
 }
 
 .album__release {
