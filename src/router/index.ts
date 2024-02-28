@@ -7,24 +7,29 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/albums',
       name: 'albums',
-      component: () => import('@/views/AlbumsView.vue')
+      component: () => import('@/views/AlbumsView.vue'),
     },
     {
       path: '/albums/:id',
       name: 'album',
-      component: () => import('@/views/AlbumView.vue')
+      component: () => import('@/views/AlbumView.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('@/views/AboutView.vue')
+      component: () => import('@/views/AboutView.vue'),
     },
-  ]
-})
+    {
+      path: '/:catchAll(.*)',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+    },
+  ],
+});
 
-export default router
+export default router;

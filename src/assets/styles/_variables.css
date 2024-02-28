@@ -10,7 +10,7 @@
   --color-8: #404040;
   --color-9: #2f2f2f;
   --color-10: #171717;
-  --color-11: #0a0a0a;
+  --color-11: #111111;
 
   /* Sizes */
   --size-xs: 4px;
@@ -41,6 +41,9 @@
 
 :root {
   /* Background */
+  --bg-color-darker-light: var(--color-11);
+  --bg-color-darker-dark: var(--color-11);
+
   --bg-color-light: var(--color-1);
   --bg-color-dark: var(--color-10);
 
@@ -86,7 +89,8 @@
 }
 
 :root {
-  --bg-color: var( --bg-color-light);
+  --bg-color-darker: var(--bg-color-darker-light);
+  --bg-color: var(--bg-color-light);
   --bg-color-soft: var(--bg-color-soft-light);
   --bg-color-mute: var(--bg-color-mute-light);
 
@@ -108,6 +112,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --bg-color-darker: var(--bg-color-darker-dark);
     --bg-color: var(--bg-color-dark);
     --bg-color-soft: var(--bg-color-soft-dark);
     --bg-color-mute: var(--bg-color-mute-dark);

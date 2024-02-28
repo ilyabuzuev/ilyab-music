@@ -21,7 +21,7 @@ playerStore.setAlbum(album);
 </script>
 
 <template>
-  <article class="album">
+  <div class="album">
     <div class="album__header">
       <div class="album__cover">
         <picture>
@@ -62,9 +62,9 @@ playerStore.setAlbum(album);
           />
         </li>
       </ul>
-      <div class="album__empty" v-else>Песни не найдены</div>
+      <div class="album__empty" v-else>Песни не найдены :(</div>
     </div>
-  </article>
+  </div>
 </template>
 
 <style scoped>

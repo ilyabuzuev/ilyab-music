@@ -23,3 +23,9 @@ body {
   margin: 0 auto;
   padding: var(--size-lg) var(--size-lg);
 }
+
+.page__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-lg);
+}

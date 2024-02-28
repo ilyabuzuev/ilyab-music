@@ -10,28 +10,20 @@ const id: string = router.currentRoute.value.params.id as unknown as string;
 const album: IAlbum = getAlbum(Number(id));
 
 function getAlbum(id: number): IAlbum {
-  const album = albums.find((album: IAlbum) => album.id === id) as unknown as IAlbum;
-
-  return album;
+  return albums.find((album: IAlbum) => album.id === id) as unknown as IAlbum;
 }
 </script>
 
 <template>
-  <div class="container-REMOVE_THIS">
-    <Album
-      :id="album.id"
-      :title="album.title"
-      :author="album.author"
-      :releaseYear="album.releaseYear"
-      :cover="album.cover"
-      :songs="album.songs"
-      :description="album.description"
-    />
-  </div>
+  <Album
+    :id="album.id"
+    :title="album.title"
+    :author="album.author"
+    :releaseYear="album.releaseYear"
+    :cover="album.cover"
+    :songs="album.songs"
+    :description="album.description"
+  />
 </template>
 
-<style scoped>
-.test {
-  color: var(--text-color);
-}
-</style>
+<style scoped></style>

@@ -12,7 +12,11 @@ const playerStore = usePlayerStore();
 <template>
   <div class="player" v-if="playerStore.currentSong.audio">
     <div class="player__controls">
-      <Button @playerHandle="playerStore.playPreviousSong()" noPaddings isTransparent>
+      <Button
+        @playerHandle="playerStore.playPreviousSong()"
+        noPaddings
+        isTransparent
+      >
         <template v-slot:icon>
           <Icon
             icon="tabler:player-track-prev-filled"
@@ -37,7 +41,12 @@ const playerStore = usePlayerStore();
           />
         </template>
       </Button>
-      <Button v-else @playerHandle="playerStore.unpauseSong()" noPaddings isTransparent>
+      <Button
+        v-else
+        @playerHandle="playerStore.unpauseSong()"
+        noPaddings
+        isTransparent
+      >
         <template v-slot:icon>
           <Icon
             icon="tabler:player-play-filled"
@@ -47,7 +56,11 @@ const playerStore = usePlayerStore();
           />
         </template>
       </Button>
-      <Button @playerHandle="playerStore.playNextSong()" noPaddings isTransparent>
+      <Button
+        @playerHandle="playerStore.playNextSong()"
+        noPaddings
+        isTransparent
+      >
         <template v-slot:icon>
           <Icon
             icon="tabler:player-track-next-filled"
@@ -92,8 +105,8 @@ const playerStore = usePlayerStore();
   grid-template-columns: 80px 180px 1fr 60px;
   align-items: center;
   gap: var(--size-lg);
-  padding: var(--size-lg);
-  background-color: var(--bg-color-soft);
+  /*padding: var(--size-lg);*/
+  /*background-color: var(--bg-color-soft);*/
   border-radius: var(--size-sm);
 }
 

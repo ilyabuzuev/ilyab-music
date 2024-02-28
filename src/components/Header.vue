@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import Logo from '@/components/Logo.vue';
 import Navigation from '@/components/Navigation.vue';
-// import Player from '@/components/Player.vue';
 </script>
 
 <template>
-  <header class="header">
+  <header class="header container">
     <div class="header__container">
       <div class="header__content">
         <Logo />
         <Navigation />
-        <!-- <Player /> -->
       </div>
     </div>
   </header>
 </template>
 
 <style scoped>
+.header {
+  width: 100%;
+}
+
 .header__content {
   display: flex;
   align-items: center;

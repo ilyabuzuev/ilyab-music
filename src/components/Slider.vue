@@ -20,17 +20,16 @@ function sliderTimeUpadte(evt: MouseEvent) {
 </script>
 
 <template>
-  <!-- {{ slider?.offsetWidth }} -->
   <div class="slider" @click="sliderTimeUpadte($event)" ref="slider">
     <div
       class="slider__progress"
       ref="progress"
-      :style="`width: ${(slider?.offsetWidth / playerStore.currentSong.audio!.duration) * playerStore.currentSong!.currentTime}px`"
+      :style="`width: ${!slider || (slider?.offsetWidth / playerStore.currentSong.audio!.duration) * (playerStore.currentSong.currentTime ? playerStore.currentSong.currentTime : 0)}px`"
     ></div>
     <div
       class="slider__thumb"
       ref="thumb"
-      :style="`transform: translateX(${(slider?.offsetWidth / playerStore.currentSong.audio!.duration) * playerStore.currentSong!.currentTime}px)`"
+      :style="`transform: translateX(${!slider || (slider?.offsetWidth / playerStore.currentSong.audio!.duration) * (playerStore.currentSong.currentTime ? playerStore.currentSong.currentTime : 0)}px)`"
     ></div>
   </div>
 </template>
